@@ -1,0 +1,13 @@
+C:\Users\Tom\Documents\Visual Studio 2013\Projects\FlickerBox\FlickerBox\bin\Debug\FlickerBox.exe.config
+C:\Users\Tom\Documents\Visual Studio 2013\Projects\FlickerBox\FlickerBox\obj\Debug\FlickerBox.exe
+C:\Users\Tom\Documents\Visual Studio 2013\Projects\FlickerBox\FlickerBox\obj\Debug\FlickerBox.pdb
+C:\Users\Tom\Documents\Visual Studio 2013\Projects\FlickerBox\FlickerBox\bin\Debug\FlickerBox.exe
+C:\Users\Tom\Documents\Visual Studio 2013\Projects\FlickerBox\FlickerBox\bin\Debug\FlickerBox.pdb
+C:\Users\Tom\Documents\Visual Studio 2013\Projects\FlickerBox\FlickerBox\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Tom\Documents\Visual Studio 2013\Projects\FlickerBox\FlickerBox\bin\Debug\NLog.dll
+C:\Users\Tom\Documents\Visual Studio 2013\Projects\FlickerBox\FlickerBox\bin\Debug\WebSocket4Net.dll
+C:\Users\Tom\Documents\Visual Studio 2013\Projects\FlickerBox\FlickerBox\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Tom\Documents\Visual Studio 2013\Projects\FlickerBox\FlickerBox\bin\Debug\NLog.xml
+C:\Users\Tom\Documents\Visual Studio 2013\Projects\FlickerBox\FlickerBox\obj\Debug\FlickerBox.csprojResolveAssemblyReference.cache
+C:\Users\Tom\Documents\Visual Studio 2013\Projects\FlickerBox\FlickerBox\obj\Debug\FlickerBox.Properties.Resources.resources
+C:\Users\Tom\Documents\Visual Studio 2013\Projects\FlickerBox\FlickerBox\obj\Debug\FlickerBox.csproj.GenerateResource.Cache
