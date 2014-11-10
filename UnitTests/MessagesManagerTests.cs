@@ -65,8 +65,8 @@ namespace UnitTests
                 "\"State\":\"" + expectedState + "\"}", s));
 
             //
-            IMessagesManager toTest = new MessagesManager(FakeFriendDirectory, FakeChannelFactory, ForTestPublicId);
-            toTest.AcknowledgeRead(new Message() { Id = id, FromPublicId = fromPublicId});
+            IMessagesManager toTest = new MessagesManager(FakeFriendDirectory, FakeChannelFactory, fromPublicId);
+            toTest.AcknowledgeRead(new Ack() { Id = id, State = AckStates.Read.ToString()});
             mockedChannel.Verify(o => o.SendMessage(It.IsAny<string>()), Times.Once);
 
             FakeChannelFactory.ToReturn = null;

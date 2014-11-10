@@ -78,10 +78,9 @@ namespace FlickerBox.Communication
             Send(message, subject);
         }
 
-        public void AcknowledgeRead(Message message)
+        public void AcknowledgeRead(Ack ack)
         {
-            string subject = message.FromPublicId;
-            var ack = new Ack() { Id = message.Id, State = AckStates.Read.ToString() };
+            string subject = this.publicId;
             Send(ack, subject);
         }
 

@@ -18,8 +18,9 @@ namespace UnitTests
 
         [SetUp]
         [TearDown]
-        public void Init()
+        public override void Init()
         {
+            base.Init();
             Write("Cleaning all the friends.");
             FriendDirectory.ResetAll();
         }

@@ -55,9 +55,9 @@ namespace FlickerBox.ClientInteraction
             this.messagesManager.Send(message);
         }
 
-        public void AcknowledgeRead(Message message)
+        public void AcknowledgeRead(Ack ack)
         {
-            this.messagesManager.AcknowledgeRead(message);
+            this.messagesManager.AcknowledgeRead(ack);
         }
 
         public event EventHandler<Message> OnReceived;

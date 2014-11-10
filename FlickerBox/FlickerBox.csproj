@@ -42,6 +42,7 @@
       <HintPath>..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -60,11 +61,14 @@
     <Compile Include="ClientInteraction\CommandListener.cs" />
     <Compile Include="ClientInteraction\IClientCommandHandler.cs" />
     <Compile Include="ClientInteraction\ICommandListener.cs" />
+    <Compile Include="Communication\ChannelFactory.cs" />
     <Compile Include="Communication\FastFlickerClient.cs" />
     <Compile Include="Communication\MessagesManager.cs" />
     <Compile Include="Communication\IChannel.cs" />
     <Compile Include="Communication\IChannelFactory.cs" />
     <Compile Include="Communication\IMessagesManager.cs" />
+    <Compile Include="Configuration\ConfigurationKeys.cs" />
+    <Compile Include="Configuration\MyConfiguration.cs" />
     <Compile Include="Directory\Friend.cs" />
     <Compile Include="Directory\FriendDirectory.cs" />
     <Compile Include="Messages\GetAllFriendRequest.cs" />
@@ -93,6 +97,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

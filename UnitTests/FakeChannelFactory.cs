@@ -1,6 +1,5 @@
 ﻿using FlickerBox.Communication;
 using NLog;
-using NUnit.Framework.Constraints;
 
 namespace UnitTests
 {

@@ -30,8 +30,7 @@ namespace UnitTests
         }
 
         [SetUp]
-        [TearDown]
-        public void Init()
+        public virtual void Init()
         {
             FakeChannelFactory.ResetAll();
         }

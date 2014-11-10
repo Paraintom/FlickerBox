@@ -32,7 +32,14 @@ namespace FlickerBox.Communication
         private bool TryToConnect()
         {
             bool success;
-            websocket.Open();
+            if (websocket.State != WebSocketState.Connecting)
+            {
+                websocket.Open();
+            }
+            else
+            {
+                log.Info("Doing nothing as we already are connecting ...");
+            }
             success = !resetEvent.WaitOne(TimeSpan.FromSeconds(2));
             return success;
         }
@@ -76,6 +83,7 @@ namespace FlickerBox.Communication
         private void websocket_Opened(object sender, EventArgs e)
         {
             resetEvent.Set();
+            numberMessageReceived = 0;
             websocket.Send(Subject);
         }
 
