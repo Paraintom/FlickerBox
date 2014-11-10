@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using FlickerBox.Directory;
+using FlickerBox.Messages;
 
 namespace UnitTests
 {
     public class FakeFriendDirectory : IFriendDirectory
     {
-        public void Discover(string name, string passphrase){}
+        public void Discover(FriendRequest request){}
 
         public event EventHandler<Friend> OnDiscoverResult;
         public List<Friend> GetAll()

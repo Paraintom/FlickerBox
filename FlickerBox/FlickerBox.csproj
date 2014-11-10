@@ -56,6 +56,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientInteraction\ClientCommandHandler.cs" />
+    <Compile Include="ClientInteraction\CommandListener.cs" />
+    <Compile Include="ClientInteraction\IClientCommandHandler.cs" />
+    <Compile Include="ClientInteraction\ICommandListener.cs" />
     <Compile Include="Communication\FastFlickerClient.cs" />
     <Compile Include="Communication\MessagesManager.cs" />
     <Compile Include="Communication\IChannel.cs" />
@@ -63,6 +67,8 @@
     <Compile Include="Communication\IMessagesManager.cs" />
     <Compile Include="Directory\Friend.cs" />
     <Compile Include="Directory\FriendDirectory.cs" />
+    <Compile Include="Messages\GetAllFriendRequest.cs" />
+    <Compile Include="Messages\FriendRequest.cs" />
     <Compile Include="Directory\IFriendDirectory.cs" />
     <Compile Include="Encryption\EncryptionExtentionMethods.cs" />
     <Compile Include="Events\EventExtentionsMethods.cs" />
@@ -73,7 +79,9 @@
     <Compile Include="Identity\IIdentityManager.cs" />
     <Compile Include="Messages\Ack.cs" />
     <Compile Include="Messages\AckStates.cs" />
+    <Compile Include="Messages\GetAllMessagesCommand.cs" />
     <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\MessageConst.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

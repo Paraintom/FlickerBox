@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using FlickerBox.Messages;
 
 namespace FlickerBox.Directory
 {
     public interface IFriendDirectory
     {
-        void Discover(string name, string passphrase);
+        void Discover(FriendRequest request);
         event EventHandler<Friend> OnDiscoverResult;
 
         List<Friend> GetAll();

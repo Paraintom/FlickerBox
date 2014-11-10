@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using FlickerBox.Communication;
+using FlickerBox.Directory;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using NUnit.Framework;
 
 namespace UnitTests
 {
@@ -23,9 +25,15 @@ namespace UnitTests
             SimpleConfigurator.ConfigureForTargetLogging(target, LogLevel.Trace);
 
             Logger logger = LogManager.GetLogger("ee");
-            logger.Debug("log message");
             logger.Debug("another log message");
 
+        }
+
+        [SetUp]
+        [TearDown]
+        public void Init()
+        {
+            FakeChannelFactory.ResetAll();
         }
 
         public void Write(string message)

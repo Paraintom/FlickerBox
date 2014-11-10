@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FlickerBox.Directory;
+using FlickerBox.Messages;
 using NUnit.Framework;
 
 namespace UnitTests
@@ -13,7 +14,7 @@ namespace UnitTests
     [TestFixture]
     public class FriendDirectoryTests : BaseTest
     {
-        private string Id = "MyId";
+        private string Id = "MyID";
 
         [SetUp]
         [TearDown]
@@ -36,7 +37,7 @@ namespace UnitTests
             Assert.AreEqual(0,toTest.GetAll().Count);
             toTest.OnDiscoverResult += (sender, friend) => result = friend;
             AckHandShake(friendPublicId, passphrase);
-            toTest.Discover(friendName,passphrase);
+            toTest.Discover(new FriendRequest() { Name = friendName, Passphrase = passphrase });
             Thread.Sleep(4000);
             //Then we should have received the confirmation
             Assert.IsNotNull(result);

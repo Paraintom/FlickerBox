@@ -2,6 +2,7 @@
 {
     public class Message
     {
+       
         public Message()
         {
             this.Type = this.GetType().Name;
@@ -11,6 +12,6 @@
         public string FromPublicId { get; set; }
         public string Id { get; set; }
         public string UtcCreationTime { get; set; }
-        public string Content { get; set; }
+        public string Content { get; set; } 
     }
 }

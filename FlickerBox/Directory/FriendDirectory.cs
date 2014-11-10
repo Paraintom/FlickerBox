@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using FlickerBox.Communication;
 using FlickerBox.Events;
+using FlickerBox.Messages;
 using NLog;
 
 namespace FlickerBox.Directory
@@ -26,8 +27,10 @@ namespace FlickerBox.Directory
             allFriends = LoadFriends();
         }
 
-        public void Discover(string name, string passphrase)
+        public void Discover(FriendRequest request)
         {
+            var name = request.Name;
+            var passphrase = request.Passphrase;
             log.Info("Discover Query received for {0}", name);
             lock (internalLock)
             {
@@ -122,7 +125,7 @@ namespace FlickerBox.Directory
 
 
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
                 log.Warn("File friends not found ...");
             }
