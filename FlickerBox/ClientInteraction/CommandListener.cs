@@ -101,7 +101,8 @@ namespace FlickerBox.ClientInteraction
         public event EventHandler<FriendRequest> OnFriendRequestReceived;
         public void SendFriends(List<Friend> all)
         {
-            SendObject(all);
+            var toSend = new FriendList() {Result = all};
+            SendObject(toSend);
         }
 
         public event EventHandler<GetAllMessagesCommand> OnGetAllMessagesFromReceived;

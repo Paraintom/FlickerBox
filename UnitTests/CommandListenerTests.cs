@@ -203,10 +203,10 @@ namespace UnitTests
                 new Friend(){Name = name2, Passphrase = "secret!", PublicId = "NotImportant..."}
             };
             //Creating message
-            string expectedMessage = "[" +
+            string expectedMessage = "{\"Type\":\"FriendList\",\"Result\":[" +
                                            "{\"Name\":\"" + name1 + "\"}," +
                                            "{\"Name\":\"" + name2 + "\"}" +
-                                           "]";
+                                           "]}";
             Assert.IsNull(received);
             toTest.SendFriends(allFriends);
             Assert.IsNotNull(received);

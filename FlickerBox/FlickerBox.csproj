@@ -71,6 +71,7 @@
     <Compile Include="Configuration\MyConfiguration.cs" />
     <Compile Include="Directory\Friend.cs" />
     <Compile Include="Directory\FriendDirectory.cs" />
+    <Compile Include="Messages\FriendList.cs" />
     <Compile Include="Messages\GetAllFriendRequest.cs" />
     <Compile Include="Messages\FriendRequest.cs" />
     <Compile Include="Directory\IFriendDirectory.cs" />
