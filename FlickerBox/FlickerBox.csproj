@@ -84,7 +84,7 @@
     <Compile Include="Identity\IIdentityManager.cs" />
     <Compile Include="Messages\Ack.cs" />
     <Compile Include="Messages\AckStates.cs" />
-    <Compile Include="Messages\GetAllMessagesCommand.cs" />
+    <Compile Include="Messages\GetAllMessagesRequest.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\MessageConst.cs" />
     <Compile Include="Program.cs" />

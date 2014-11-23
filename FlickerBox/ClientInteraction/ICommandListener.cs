@@ -13,7 +13,7 @@ namespace FlickerBox.ClientInteraction
         void SendFriends(List<Friend> all);
 
         //Messages Management
-        event EventHandler<GetAllMessagesCommand> OnGetAllMessagesFromReceived;
+        event EventHandler<GetAllMessagesRequest> OnGetAllMessagesFromReceived;
         event EventHandler<Message> OnMessageToSendReceived;
         event EventHandler<Ack> OnFlagMessageRead;
         void SendMessages(List<Message> messages);

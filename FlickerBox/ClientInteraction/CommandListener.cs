@@ -41,7 +41,7 @@ namespace FlickerBox.ClientInteraction
         private void HandleCommand(object command)
         {
             //Messages
-            var getAllMessageCommand = command as GetAllMessagesCommand;
+            var getAllMessageCommand = command as GetAllMessagesRequest;
             if (getAllMessageCommand != null)
             {
                 log.Info("New GetAllMessagesCommand received...");
@@ -105,7 +105,7 @@ namespace FlickerBox.ClientInteraction
             SendObject(toSend);
         }
 
-        public event EventHandler<GetAllMessagesCommand> OnGetAllMessagesFromReceived;
+        public event EventHandler<GetAllMessagesRequest> OnGetAllMessagesFromReceived;
         public event EventHandler<Message> OnMessageToSendReceived;
         public event EventHandler<Ack> OnFlagMessageRead;
         public void SendMessages(List<Message> messages)

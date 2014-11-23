@@ -20,7 +20,7 @@ namespace UnitTests
         {
             FakeChannel clientSideCommandChannel;
             var toTest = InitCommandListener(out clientSideCommandChannel);
-            GetAllMessagesCommand result = null;
+            GetAllMessagesRequest result = null;
             DateTime utcNow = DateTime.UtcNow;
             //Truncate the Milliseconds...
             DateTime dateTimeExpected = utcNow.AddTicks(-(utcNow.Ticks % TimeSpan.TicksPerSecond));

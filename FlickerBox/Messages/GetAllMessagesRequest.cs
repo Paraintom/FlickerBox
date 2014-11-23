@@ -2,9 +2,9 @@
 
 namespace FlickerBox.Messages
 {
-    public class GetAllMessagesCommand
+    public class GetAllMessagesRequest
     {
-        public GetAllMessagesCommand()
+        public GetAllMessagesRequest()
         {
             this.Type = this.GetType().Name;
         }
