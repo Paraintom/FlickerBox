@@ -11,5 +11,6 @@ namespace FlickerBox.Directory
 
         List<Friend> GetAll();
         Friend Get(string friendName);
+        Friend GetFromPublicId(string publicId);
     }
 }

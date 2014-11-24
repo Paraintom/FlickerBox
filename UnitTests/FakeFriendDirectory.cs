@@ -24,5 +24,15 @@ namespace UnitTests
                 PublicId = new Guid().ToString()
             };
         }
+
+        public Friend GetFromPublicId(string publicId)
+        {
+            return new Friend()
+            {
+                Name = "friendName",
+                Passphrase = "PassPhrase",
+                PublicId = publicId
+            };
+        }
     }
 }

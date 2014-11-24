@@ -3,6 +3,7 @@
     public enum AckStates
     {
         Delivered,
-        Read
+        Read,
+        Error
     }
 }

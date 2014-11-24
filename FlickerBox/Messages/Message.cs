@@ -9,6 +9,7 @@
         }
         public string Type { get; set; }
         public string ToFriendName { get; set; }
+        public string FromFriendName { get; set; }
         public string FromPublicId { get; set; }
         public string Id { get; set; }
         public string UtcCreationTime { get; set; }

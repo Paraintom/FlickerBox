@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ExceptionServices;
-using System.Text;
-using System.Threading.Tasks;
 using FlickerBox.Communication;
 using FlickerBox.Directory;
 using FlickerBox.Events;
 using FlickerBox.Identity;
 using FlickerBox.Messages;
+using NLog;
 
 namespace FlickerBox.ClientInteraction
 {
     public class ClientCommandHandler : IClientCommandHandler
     {
+        private readonly Logger log = LogManager.GetCurrentClassLogger();
         private readonly IFriendDirectory friendDirectory;
         private readonly IMessagesManager messagesManager;
         public ClientCommandHandler(IIdentityManager identityManager, IChannelFactory channelFactory)
@@ -50,9 +48,22 @@ namespace FlickerBox.ClientInteraction
             return friendDirectory.Get(friendName);
         }
 
+        public Friend GetFromPublicId(string publicId)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Send(Message message)
         {
-            this.messagesManager.Send(message);
+            try
+            {
+                this.messagesManager.Send(message);
+            }
+            catch (Exception e)
+            {
+                log.Error("Error while trying to send new message :" + e.Message);
+                this.OnAcknowledged.RaiseEvent(this, new Ack() { Id = message.Id, State = AckStates.Error.ToString() });
+            }
         }
 
         public void AcknowledgeRead(Ack ack)

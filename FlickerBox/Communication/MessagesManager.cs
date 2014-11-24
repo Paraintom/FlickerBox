@@ -39,6 +39,7 @@ namespace FlickerBox.Communication
                 if (type == typeof(Message).Name)
                 {
                     var newMessage = JsonConvert.DeserializeObject<Message>(s);
+                    newMessage.FromFriendName = this.friendDirectory.GetFromPublicId(newMessage.FromPublicId).Name;
                     OnReceived.RaiseEvent(this, newMessage);
                     Ack confirm = new Ack()
                     {

@@ -66,6 +66,21 @@ namespace FlickerBox.Directory
             }
         }
 
+        public Friend GetFromPublicId(string fromPublicId)
+        {
+            lock (internalLock)
+            {
+                var result = allFriends.Select(o => o.Value).FirstOrDefault(o => o.PublicId == fromPublicId);
+                if (result != null)
+                {
+                    return result;
+                }
+                string problem = String.Format("No friend with publicId {0} has been found", fromPublicId);
+                log.Warn(problem);
+                throw new ApplicationException(problem);
+            }
+        }
+
         public void DiscoverSync(string name, string passphrase)
         {
             var newFriend = new Friend { Name = name, Passphrase = passphrase };
