@@ -6,6 +6,7 @@ using FlickerBox.Events;
 using FlickerBox.Identity;
 using FlickerBox.Messages;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using NLog;
 
 namespace FlickerBox.ClientInteraction
@@ -15,6 +16,7 @@ namespace FlickerBox.ClientInteraction
         private readonly Logger log = LogManager.GetCurrentClassLogger();
         private readonly IChannel clientChannel;
         private readonly string publicId;
+
         public CommandListener(IIdentityManager identity, IChannelFactory channelFactory)
         {
             clientChannel = channelFactory.GetNew(identity.PrivateId);
@@ -24,17 +26,24 @@ namespace FlickerBox.ClientInteraction
 
         private void OnCommandReceived(object sender, string commandString)
         {
-            log.Info(String.Format("Message received : {0}",commandString));
-            Type messageType;
-            if (TryGetType(commandString, out messageType))
+            try
             {
-                var command = JsonConvert.DeserializeObject(commandString, messageType);
+                log.Info(String.Format("Message received : {0}", commandString));
+                Type messageType;
+                if (TryGetType(commandString, out messageType))
+                {
+                    var command = JsonConvert.DeserializeObject(commandString, messageType);
 
-                HandleCommand(command);
+                    HandleCommand(command);
+                }
+                else
+                {
+                    log.Warn("Message type not reconized, skipping message");
+                }
             }
-            else
+            catch (Exception e)
             {
-                log.Warn("Message type not reconized, skipping message");
+                log.Error(String.Format("Error while handling command : {0}",e.Message));
             }
         }
 

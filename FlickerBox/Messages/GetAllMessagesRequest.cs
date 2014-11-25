@@ -9,6 +9,6 @@ namespace FlickerBox.Messages
             this.Type = this.GetType().Name;
         }
         public string Type { get; set; }
-        public DateTime From { get; set; }
+        public string FromTime { get; set; }
     }
 }

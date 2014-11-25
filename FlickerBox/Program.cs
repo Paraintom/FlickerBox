@@ -25,7 +25,7 @@ namespace FlickerBox
             commandListener.OnFlagMessageRead += ((sender, ack) => handler.AcknowledgeRead(ack));
             commandListener.OnFriendRequestReceived += (sender, request) => handler.Discover(request);
             commandListener.OnGetAllFriendsReceived += (sender, request) => handler.GetAll();
-            commandListener.OnGetAllMessagesFromReceived += (sender, command) => handler.GetAllMessage(command.From);
+            commandListener.OnGetAllMessagesFromReceived += (sender, command) => handler.GetAllMessage(command.FromTime.FromJavascriptTicks());
             commandListener.OnMessageToSendReceived += (sender, message) => handler.Send(message);
             //Hook up events from friends to client
             handler.OnDiscoverResult += (sender, friend) => commandListener.SendFriends(new List<Friend>() { friend });
@@ -33,7 +33,7 @@ namespace FlickerBox
             handler.OnAcknowledged += (sender, ack) => commandListener.SendStateChanged(ack);
             while (true)
             {
-                Thread.Sleep(60000);
+                Thread.Sleep(300000);
                 NLog.LogManager.GetCurrentClassLogger().Info("I am still alive!(Providing some infos here...)");
             }
         }

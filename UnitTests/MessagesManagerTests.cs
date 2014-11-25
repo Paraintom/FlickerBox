@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using FlickerBox;
 using FlickerBox.Communication;
 using FlickerBox.Messages;
 using Moq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using NUnit.Framework;
 
 namespace UnitTests
@@ -18,11 +21,13 @@ namespace UnitTests
         {
             string messageId = DateTime.UtcNow.ToShortDateString();
             string messageTo = "John";
-            string messageCreationTime = DateTime.UtcNow.UnixTicks();
+            string messageFrom = "Tom";
+            string messageCreationTime = DateTime.UtcNow.JavascriptTicks();
             string messageContent = "HEllo Woorld!";
             Message toSend = new Message()
             {
                 ToFriendName = messageTo,
+                FromFriendName = messageFrom,
                 Id = messageId,
                 Content = messageContent,
                 UtcCreationTime = messageCreationTime
@@ -35,6 +40,7 @@ namespace UnitTests
                 "{" +
                 "\"Type\":\"" + "Message" + "\"," +
                 "\"ToFriendName\":\"" + messageTo + "\"," +
+                "\"FromFriendName\":\"" + messageFrom + "\"," +
                 "\"FromPublicId\":\"" + ForTestPublicId + "\"," +
                 "\"Id\":\"" + messageId + "\"," +
                 "\"UtcCreationTime\":\"" + messageCreationTime + "\"," +

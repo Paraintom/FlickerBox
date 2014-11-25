@@ -24,16 +24,16 @@ namespace UnitTests
             DateTime utcNow = DateTime.UtcNow;
             //Truncate the Milliseconds...
             DateTime dateTimeExpected = utcNow.AddTicks(-(utcNow.Ticks % TimeSpan.TicksPerSecond));
-            string now = dateTimeExpected.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            string now = dateTimeExpected.JavascriptTicks();
 
             string incomingCommand = "{" +
-                                     "\"Type\":\"" + "GetAllMessagesCommand" + "\"," +
-                                     "\"From\":\"" + now + "\"}";
+                                     "\"Type\":\"" + "GetAllMessagesRequest" + "\"," +
+                                     "\"FromTime\":\"" + now + "\"}";
             toTest.OnGetAllMessagesFromReceived += (sender, time) => { result = time; Write("Event raised! :" + time); };
             Assert.IsNull(result);
             clientSideCommandChannel.SendMessage(incomingCommand);
             Assert.IsNotNull(result);
-            Assert.AreEqual(dateTimeExpected, result.From);
+            Assert.AreEqual(dateTimeExpected, result.FromTime.FromJavascriptTicks());
         }
         [Test]
         public void OnMessageToSendReceivedTriggerGoodEvent()
@@ -44,7 +44,7 @@ namespace UnitTests
             string content = "content 123 !\"£$%^&*()_";
             string id = "e2pjpjewpe0";
             string friendName = "Nelson";
-            string utcCreationTime = DateTime.UtcNow.UnixTicks();
+            string utcCreationTime = DateTime.UtcNow.JavascriptTicks();
 
             var toSend = GetMessage(content, id, friendName, utcCreationTime);
 
@@ -67,6 +67,7 @@ namespace UnitTests
                 Content = content,
                 Id = id,
                 ToFriendName = friendName,
+                FromFriendName = "Thomas",
                 UtcCreationTime = utcCreationTime
             };
             return toSend;
@@ -80,7 +81,7 @@ namespace UnitTests
             Ack result = null;
             string id = "e2pjpjewpe0";
             //Not yet, in the futur?
-            //string utcCreationTime = DateTime.UtcNow.UnixTicks();
+            //string utcCreationTime = DateTime.UtcNow.JavascriptTicks();
 
             Ack toSend = new Ack()
             {
@@ -131,15 +132,15 @@ namespace UnitTests
                 received = s;
                 Write("Message received raised! :" + s);
             };
-            string utcCreationTime = DateTime.UtcNow.UnixTicks();
+            string utcCreationTime = DateTime.UtcNow.JavascriptTicks();
             List<Message> allMessages = new List<Message>();
             allMessages.Add(GetMessage("Cont1", "id1", "Simon", utcCreationTime));
             allMessages.Add(GetMessage("Cont2", "id2", "Dam", utcCreationTime));
             //Creating message
             string expectedMessage = "[" +
-                                     "{\"Type\":\"Message\",\"ToFriendName\":\"Simon\",\"FromPublicId\":null," +
+                                     "{\"Type\":\"Message\",\"ToFriendName\":\"Simon\",\"FromFriendName\":\"Thomas\",\"FromPublicId\":null," +
                                      "\"Id\":\"id1\",\"UtcCreationTime\":\""+utcCreationTime+"\",\"Content\":\"Cont1\"}," +
-                                     "{\"Type\":\"Message\",\"ToFriendName\":\"Dam\",\"FromPublicId\":null," +
+                                     "{\"Type\":\"Message\",\"ToFriendName\":\"Dam\",\"FromFriendName\":\"Thomas\",\"FromPublicId\":null," +
                                      "\"Id\":\"id2\",\"UtcCreationTime\":\""+utcCreationTime+"\",\"Content\":\"Cont2\"}]";
             Assert.IsNull(received);
             toTest.SendMessages(allMessages);
