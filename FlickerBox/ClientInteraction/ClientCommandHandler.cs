@@ -18,23 +18,26 @@ namespace FlickerBox.ClientInteraction
         {
             string publicId = identityManager.PublicId;
             friendDirectory = new FriendDirectory(publicId, channelFactory);
-            friendDirectory.OnDiscoverResult += (sender, friend) => this.OnDiscoverResult.RaiseEvent(sender, friend);
+            friendDirectory.OnDiscoverResult += (sender, friend) => this.OnFriendToSend.RaiseEvent(sender, friend);
 
             messagesManager = new MessagesManager(friendDirectory, channelFactory, publicId);
             messagesManager.OnAcknowledged += (sender, ack) => this.OnAcknowledged.RaiseEvent(sender, ack);
             messagesManager.OnReceived += (sender, message) => this.OnReceived.RaiseEvent(sender, message);
         }
 
+        public event EventHandler<Friend> OnFriendToSend;
+
+        public void ResendAllFriends()
+        {
+            foreach (var friend in friendDirectory.GetAll())
+            {
+                this.OnFriendToSend.RaiseEvent(this, friend);
+            }
+        }
+
         public void Discover(FriendRequest request)
         {
             friendDirectory.Discover(request);
-        }
-
-        public event EventHandler<Friend> OnDiscoverResult;
-
-        public List<Friend> GetAll()
-        {
-            return friendDirectory.GetAll();
         }
 
         /// <summary>
@@ -46,11 +49,6 @@ namespace FlickerBox.ClientInteraction
         public Friend Get(string friendName)
         {
             return friendDirectory.Get(friendName);
-        }
-
-        public Friend GetFromPublicId(string publicId)
-        {
-            throw new NotImplementedException();
         }
 
         public void Send(Message message)
@@ -71,12 +69,12 @@ namespace FlickerBox.ClientInteraction
             this.messagesManager.AcknowledgeRead(ack);
         }
 
+        public void ResendMessages(DateTime from)
+        {
+            this.messagesManager.Resend(from);
+        }
+
         public event EventHandler<Message> OnReceived;
         public event EventHandler<Ack> OnAcknowledged;
-        public List<Message> GetAllMessage(DateTime since)
-        {
-            //not implemented yet!
-            return new List<Message>();
-        }
     }
 }

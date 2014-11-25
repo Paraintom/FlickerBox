@@ -1,13 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using FlickerBox.Communication;
 using FlickerBox.Directory;
 using FlickerBox.Messages;
 
 namespace FlickerBox.ClientInteraction
 {
-    public interface IClientCommandHandler : IFriendDirectory, IMessagesManager
+    public interface IClientCommandHandler
     {
-        List<Message> GetAllMessage(DateTime since);
+        void ResendMessages(DateTime dateTime);
+        void AcknowledgeRead(Ack ack);
+        void Send(Message message);
+        event EventHandler<Message> OnReceived;
+        event EventHandler<Ack> OnAcknowledged;
+
+        void Discover(FriendRequest request);
+        void ResendAllFriends();
+        event EventHandler<Friend> OnFriendToSend;
     }
 }

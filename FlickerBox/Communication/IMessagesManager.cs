@@ -7,6 +7,7 @@ namespace FlickerBox.Communication
     {
         void Send(Message m);
         void AcknowledgeRead(Ack ack);
+        void Resend(DateTime from);
         event EventHandler<Message> OnReceived;
         event EventHandler<Ack> OnAcknowledged;
     }

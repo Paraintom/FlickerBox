@@ -20,15 +20,15 @@ namespace FlickerBox
             IChannelFactory channelFactory = new ChannelFactory();
             var identityManager = new IdentityManager();
             var commandListener = new CommandListener(identityManager, channelFactory);
-            var handler = new ClientCommandHandler(identityManager, channelFactory);
+            IClientCommandHandler handler = new ClientCommandHandler(identityManager, channelFactory);
             //Hook up events from client to all friends
             commandListener.OnFlagMessageRead += ((sender, ack) => handler.AcknowledgeRead(ack));
             commandListener.OnFriendRequestReceived += (sender, request) => handler.Discover(request);
-            commandListener.OnGetAllFriendsReceived += (sender, request) => handler.GetAll();
-            commandListener.OnGetAllMessagesFromReceived += (sender, command) => handler.GetAllMessage(command.FromTime.FromJavascriptTicks());
+            commandListener.OnGetAllFriendsReceived += (sender, request) => handler.ResendAllFriends();
+            commandListener.OnGetAllMessagesFromReceived += (sender, command) => handler.ResendMessages(command.FromTime.FromJavascriptTicks());
             commandListener.OnMessageToSendReceived += (sender, message) => handler.Send(message);
             //Hook up events from friends to client
-            handler.OnDiscoverResult += (sender, friend) => commandListener.SendFriends(new List<Friend>() { friend });
+            handler.OnFriendToSend += (sender, friend) => commandListener.SendFriends(new List<Friend>() { friend });
             handler.OnReceived += (sender, message) => commandListener.SendMessages(new List<Message>() { message });
             handler.OnAcknowledged += (sender, ack) => commandListener.SendStateChanged(ack);
             while (true)

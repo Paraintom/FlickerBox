@@ -85,6 +85,11 @@ namespace FlickerBox.Communication
             Send(ack, subject);
         }
 
+        public void Resend(DateTime from)
+        {
+            throw new NotImplementedException();
+        }
+
 
         private void Send(Object toSend, string subject)
         {

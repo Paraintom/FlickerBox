@@ -83,7 +83,7 @@ namespace FlickerBox.ClientInteraction
             var getAllFriendRequestCommand = command as GetAllFriendRequest;
             if (getAllFriendRequestCommand != null)
             {
-                log.Info("New friend request received...");
+                log.Info("New GetAll friend request received...");
                 this.OnGetAllFriendsReceived.RaiseEvent(this, getAllFriendRequestCommand);
                 return;
             }
