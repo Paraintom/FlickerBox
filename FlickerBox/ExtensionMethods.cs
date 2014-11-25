@@ -17,11 +17,11 @@ namespace FlickerBox
         /// <summary>
         /// Can raise exceptions!
         /// </summary>
-        /// <param name="stringUnixTimeStamp"></param>
+        /// <param name="stringJavascriptTimeStamp"></param>
         /// <returns>the corresponding unix datetime</returns>
-        public static DateTime FromJavascriptTicks(this string stringUnixTimeStamp)
+        public static DateTime FromJavascriptTicks(this string stringJavascriptTimeStamp)
         {
-            double unixTimeStamp = double.Parse(stringUnixTimeStamp);
+            double unixTimeStamp = double.Parse(stringJavascriptTimeStamp);
             // Unix timestamp is seconds past epoch
             DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddMilliseconds(unixTimeStamp).ToLocalTime();

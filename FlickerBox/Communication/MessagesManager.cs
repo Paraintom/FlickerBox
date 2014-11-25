@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml;
+using System.Xml.Serialization;
 using FlickerBox.Directory;
 using FlickerBox.Events;
 using FlickerBox.Messages;
+using FlickerBox.Persistence;
 using Newtonsoft.Json;
 using NLog;
 
@@ -14,13 +20,15 @@ namespace FlickerBox.Communication
     ///      or encrypt the message with the passphrase and prefix with "senderPublicId:"
     ///      or Give a rendez-vous on another channel based on the passphrase one more time...
     /// </summary>
-    public class MessagesManager : IMessagesManager
+    public class MessagesManager :  BasePersister<Message>, IMessagesManager
     {
         private readonly Logger log = LogManager.GetCurrentClassLogger();
         private readonly IChannelFactory channelFactory;
         private readonly IFriendDirectory friendDirectory;
         private readonly string publicId;
-        public MessagesManager(IFriendDirectory friendDirectory, IChannelFactory channelFactory, string publicId)
+
+        public MessagesManager(IFriendDirectory friendDirectory, IChannelFactory channelFactory, string publicId) 
+            : base(o=>o.Id)
         {
             this.friendDirectory = friendDirectory;
             this.channelFactory = channelFactory;
@@ -40,6 +48,7 @@ namespace FlickerBox.Communication
                 {
                     var newMessage = JsonConvert.DeserializeObject<Message>(s);
                     newMessage.FromFriendName = this.friendDirectory.GetFromPublicId(newMessage.FromPublicId).Name;
+                    newMessage.UtcCreationTime = DateTime.UtcNow.JavascriptTicks();
                     OnReceived.RaiseEvent(this, newMessage);
                     Ack confirm = new Ack()
                     {
@@ -48,6 +57,7 @@ namespace FlickerBox.Communication
                     };
                     //Send confirmation messageReceived
                     Send(confirm, newMessage.FromPublicId);
+                    Persist(newMessage);
                 }
                 else
                 {
@@ -87,7 +97,12 @@ namespace FlickerBox.Communication
 
         public void Resend(DateTime from)
         {
-            throw new NotImplementedException();
+            IEnumerable<Message> candidates = GetAll().Where(o=>o.UtcCreationTime.FromJavascriptTicks() > from);
+            //We should create a MessageList at some point ...
+            foreach (var message in candidates)
+            {
+                OnReceived.RaiseEvent(this,message);
+            }
         }
 
 

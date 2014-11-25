@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FlickerBox.Directory;
@@ -10,7 +7,6 @@ using NUnit.Framework;
 
 namespace UnitTests
 {
-
     [TestFixture]
     public class FriendDirectoryTests : BaseTest
     {
@@ -48,6 +44,7 @@ namespace UnitTests
             Assert.AreEqual(1, toTest.GetAll().Count);
             Assert.AreEqual(result, toTest.GetAll()[0]);
 
+            //Test persistence...
             IFriendDirectory toTest2 = new FriendDirectory(Id, FakeChannelFactory);
             Assert.AreEqual(1, toTest2.GetAll().Count);
             Assert.IsNotNull(toTest2.Get(friendName));

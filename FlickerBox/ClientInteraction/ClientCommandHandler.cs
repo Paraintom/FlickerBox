@@ -29,9 +29,18 @@ namespace FlickerBox.ClientInteraction
 
         public void ResendAllFriends()
         {
-            foreach (var friend in friendDirectory.GetAll())
+            List<Friend> friends = friendDirectory.GetAll();
+            if (friends != null)
             {
-                this.OnFriendToSend.RaiseEvent(this, friend);
+                log.Debug("friendDirectory.GetAll() did return {0} results", friends.Count);
+                foreach (var friend in friends)
+                {
+                    this.OnFriendToSend.RaiseEvent(this, friend);
+                }
+            }
+            else
+            {
+                log.Warn("friendDirectory.GetAll() did return null!");
             }
         }
 

@@ -38,7 +38,9 @@ namespace FlickerBox.Communication
             }
             else
             {
-                log.Info("Doing nothing as we already are connecting ...");
+                log.Info("We are connecting, closing then opening again...");
+                websocket.Close();
+                websocket.Open();
             }
             success = !resetEvent.WaitOne(TimeSpan.FromSeconds(2));
             return success;

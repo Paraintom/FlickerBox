@@ -8,23 +8,22 @@ using System.Xml.Serialization;
 using FlickerBox.Communication;
 using FlickerBox.Events;
 using FlickerBox.Messages;
+using FlickerBox.Persistence;
 using NLog;
 
 namespace FlickerBox.Directory
 {
-    public class FriendDirectory : IFriendDirectory
+    public class FriendDirectory : BasePersister<Friend>, IFriendDirectory
     {
         private readonly Logger log = LogManager.GetCurrentClassLogger();
         private readonly IChannelFactory channelFactory;
         private readonly string publicId;
-        private readonly object internalLock = new object();
-        readonly Dictionary<string, Friend> allFriends;
 
-        public FriendDirectory(string publicId, IChannelFactory channelFactory)
+        public FriendDirectory(string publicId, IChannelFactory channelFactory) 
+            : base(o=>o.Name)
         {
             this.publicId = publicId;
             this.channelFactory = channelFactory;
-            allFriends = LoadFriends();
         }
 
         public void Discover(FriendRequest request)
@@ -32,9 +31,9 @@ namespace FlickerBox.Directory
             var name = request.Name;
             var passphrase = request.Passphrase;
             log.Info("Discover Query received for {0}", name);
-            lock (internalLock)
+            lock (InternalLock)
             {
-                if (allFriends.ContainsKey(name))
+                if (AllManaged.ContainsKey(name))
                 {
                     throw new ApplicationException("You already added " + name);
                 }
@@ -44,21 +43,14 @@ namespace FlickerBox.Directory
         }
 
         public event EventHandler<Friend> OnDiscoverResult;
-        public List<Friend> GetAll()
-        {
-            lock (internalLock)
-            {
-                return allFriends.Values.ToList();
-            }
-        }
-
+        
         public Friend Get(string friendName)
         {
-            lock (internalLock)
+            lock (InternalLock)
             {
-                if (allFriends.ContainsKey(friendName))
+                if (AllManaged.ContainsKey(friendName))
                 {
-                    return allFriends[friendName];
+                    return AllManaged[friendName];
                 }
                 string problem = String.Format("No friend with name {0} has been found", friendName);
                 log.Warn(problem);
@@ -68,9 +60,9 @@ namespace FlickerBox.Directory
 
         public Friend GetFromPublicId(string fromPublicId)
         {
-            lock (internalLock)
+            lock (InternalLock)
             {
-                var result = allFriends.Select(o => o.Value).FirstOrDefault(o => o.PublicId == fromPublicId);
+                var result = AllManaged.Select(o => o.Value).FirstOrDefault(o => o.PublicId == fromPublicId);
                 if (result != null)
                 {
                     return result;
@@ -92,19 +84,18 @@ namespace FlickerBox.Directory
             log.Debug("PublicId found : {0}", friendPublicId);
             if (!string.IsNullOrEmpty(friendPublicId))
             {
-                lock (internalLock)
+                lock (InternalLock)
                 {
-                    if (!allFriends.ContainsKey(name))
+                    if (!AllManaged.ContainsKey(name))
                     {
                         newFriend.PublicId = friendPublicId;
                         log.Info("Adding new friend : {0}.", newFriend);
-                        allFriends.Add(name, newFriend);
-                        SaveFriends();
+                        Persist(newFriend);
                     }
                     else
                     {
                         log.Warn(string.Format("We already registered {0}, ignoring result.", name));
-                        newFriend = allFriends[name];
+                        newFriend = AllManaged[name];
                     }
                 }
             }
@@ -115,49 +106,5 @@ namespace FlickerBox.Directory
             OnDiscoverResult.RaiseEvent(this, newFriend);
         }
 
-        private void SaveFriends()
-        {
-            log.Info("Saving friends");
-            var listFriends = allFriends.Values.ToList();
-            var serializer = new XmlSerializer(listFriends.GetType());
-            using (var writer = XmlWriter.Create("friends.xml"))
-            {
-                serializer.Serialize(writer, listFriends);
-            }
-        }
-
-        private Dictionary<string, Friend> LoadFriends()
-        {
-            log.Info("Loading friends");
-            var serializer = new XmlSerializer(typeof(List<Friend>));
-            try
-            {
-                using (var reader = XmlReader.Create("friends.xml"))
-                {
-                    var result = (List<Friend>)serializer.Deserialize(reader);
-                    return result.ToDictionary(o => o.Name, o => o);
-                }
-
-
-            }
-            catch (FileNotFoundException)
-            {
-                log.Warn("File friends not found ...");
-            }
-            catch (Exception e)
-            {
-                log.Error("Error while loading friends : " + e);
-            }
-
-            return new Dictionary<string, Friend>();
-        }
-
-        /// <summary>
-        /// Should be used for test only, erase all friends.
-        /// </summary>
-        public static void ResetAll()
-        {
-            File.Delete("friends.xml");
-        }
     }
 }
