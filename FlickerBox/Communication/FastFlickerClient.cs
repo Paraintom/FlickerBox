@@ -25,7 +25,9 @@ namespace FlickerBox.Communication
             var success = TryToConnect();
             if (success)
             {
-                throw new ApplicationException("Cannot connect to FastFlicker!");
+                string errorString = "Cannot connect to FastFlicker (with url {0})".FormatWith(url);
+                log.Error(errorString);
+                throw new ApplicationException(errorString);
             }
         }
 
@@ -79,7 +81,7 @@ namespace FlickerBox.Communication
 
         private void websocket_Error(object sender, ErrorEventArgs e)
         {
-            log.Error("Error whith websocket : ", e.Exception);
+            log.Error("Error with websocket : ", e.Exception);
         }
 
         private void websocket_Opened(object sender, EventArgs e)

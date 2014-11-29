@@ -98,12 +98,12 @@ namespace FlickerBox.Directory
                         newFriend = AllManaged[name];
                     }
                 }
+                OnDiscoverResult.RaiseEvent(this, newFriend);
             }
             else
             {
                 log.Warn("Unable to discover friend's publicId!");
             }
-            OnDiscoverResult.RaiseEvent(this, newFriend);
         }
 
     }

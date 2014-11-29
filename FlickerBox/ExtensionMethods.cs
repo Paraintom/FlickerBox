@@ -5,6 +5,11 @@ namespace FlickerBox
 {
     public static class ExtensionMethods
     {
+        public static string FormatWith(this string toFormat, params object[] args)
+        {
+            return String.Format(toFormat, args);
+        }
+
         // returns the number of milliseconds since Jan 1, 1970 (useful for converting C# dates to JS dates)
         public static string JavascriptTicks(this DateTime dt)
         {

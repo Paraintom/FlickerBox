@@ -87,6 +87,7 @@ namespace FlickerBox.Communication
             // Else give a RDV to an other subject based on the passphrase...
             string subject = friendDirectory.Get(message.ToFriendName).PublicId;
             Send(message, subject);
+            Persist(message);
         }
 
         public void AcknowledgeRead(Ack ack)
