@@ -86,9 +86,9 @@ namespace FlickerBox.Communication
 
         private void websocket_Opened(object sender, EventArgs e)
         {
-            resetEvent.Set();
-            numberMessageReceived = 0;
             websocket.Send(Subject);
+            numberMessageReceived = 0;
+            resetEvent.Set();
         }
 
         public event EventHandler<string> OnMessageReceived;
