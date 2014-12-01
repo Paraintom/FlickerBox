@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="en" ng-app="flickerBoxApp">
+<head>
+    <meta charset="utf-8" />
+    <title>TypeScript HTML App</title>
+    <link rel="stylesheet" href="app.css" type="text/css" />
+    <script src="flickerBoxConfiguration.js"></script>
+    <script src="Messages/FriendRequest.js"></script>
+    <script src="Messages/Friend.js"></script>
+    <script src="Messages/GetAllFriendRequest.js"></script>
+    <script src="Messages/GetAllMessagesRequest.js"></script>
+    <script src="Messages/Message.js"></script>
+    <script src="Messages/StateChange.js"></script>
+    <script src="Linq/linq.js"></script>
+    <script src="LiteEvent.js"></script>
+    <script src="ServiceLookup.js"></script>
+    <script src="FastFlickerClient.js"></script>
+    <script src="FlickerBoxClient.js"></script>
+    <script src="AngularJs/jquery.js"></script>
+    <script src="AngularJs/angular.js"></script>
+    <script src="controllers.js"></script>
+</head>
+<body ng-controller="FriendsAndMessagesCtrl">
+    <h1>Welcome in FlickerBox</h1>
+    <p>PrivateId: <input ng-model="privateId" ng-model-options="{updateOn : 'change blur'}" ng-change="onPrivateIdChanged()" />{{privateId}}</p>
+    <div id="mainContainer">
+        <p>Friend selected : {{friendSelected.Name}}</p>
+        <div id="messageDiv" ng-if="friendSelected && friendSelected.Name && friendSelected.Name.length !== 0">
+            <p>Search: <input ng-model="searchMessages" /></p>
+            <ul>
+                <!--<li ng-repeat="message in friendSelected.Messages | filter:searchMessages | orderBy:messageListOrder | limitTo:2">
+                    -->
+                <li ng-repeat="message in friendSelected.Messages | filter:searchMessages | orderBy:messageListOrder | limitTo: 30 as filteredItems">
+                    <span>-{{message.State}}-{{message.Content}}({{message.UtcCreationTime | date:"dd/MM/yyyy 'at' h:mma"}})</span>
+                    <span hidden>{{message.Id}}</span>
+                </li>
+            </ul>
+            <!--New Message-->
+            <input ng-model="contentNewMessage" placeholder="content">
+            <button ng-click="sendMessage(contentNewMessage)">Send</button><br>
+            <!--New Message End-->
+        </div>
+        <div id="friendDiv">
+            <p>Total number of friends: {{friends.length}}</p>
+            <p>Search: <input ng-model="searchFriends" /></p>
+            <ul>
+                <li ng-repeat="friend in friends | filter:searchFriends | orderBy:friendListOrder | limitTo:5 as filteredItems">
+                    <span ng-click="setFriendSelected(friend)">{{friend.Name}}({{friend.Messages.length}})</span>
+                </li>
+            </ul>
+            <button ng-click="queryAllFriends()">Get all friends</button><br>
+            <button ng-click="clearData()">Clear all local data</button><br>
+            <!--Discover new friend-->
+            <input ng-model="newFriendName" placeholder="new Name">
+            <input ng-model="newFriendPassPhrase" placeholder="Passphrase to set with your friend">
+            <button ng-click="addFriend()">Discover Friend</button><br>
+            <!--Discover new friend End-->
+        </div>
+        
+    </div>
+</body>
+</html>

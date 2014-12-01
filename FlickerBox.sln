@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlickerBox", "FlickerBox\Fl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{7F33FDC9-A409-433B-91C7-0DD8694AC560}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlickerBoxHtmlClient", "FlickerBoxHtmlClient\FlickerBoxHtmlClient.csproj", "{50F67B9F-9DFB-4D6E-9DD0-A84D64E0B449}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7F33FDC9-A409-433B-91C7-0DD8694AC560}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F33FDC9-A409-433B-91C7-0DD8694AC560}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F33FDC9-A409-433B-91C7-0DD8694AC560}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50F67B9F-9DFB-4D6E-9DD0-A84D64E0B449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50F67B9F-9DFB-4D6E-9DD0-A84D64E0B449}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50F67B9F-9DFB-4D6E-9DD0-A84D64E0B449}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50F67B9F-9DFB-4D6E-9DD0-A84D64E0B449}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,21 @@
+﻿body {
+    font-family: 'Segoe UI', sans-serif;
+}
+
+span {
+    font-style: italic;
+}
+
+#mainContainer {
+    overflow:hidden;
+}
+#friendDiv {
+    width:30%;
+    background:red;
+}
+#messageDiv {
+    float:right;
+    width:65%;
+    background:yellow;
+    clear:right;
+}
