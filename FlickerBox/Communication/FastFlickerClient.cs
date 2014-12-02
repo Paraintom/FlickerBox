@@ -33,7 +33,7 @@ namespace FlickerBox.Communication
 
         private bool TryToConnect()
         {
-            bool success;
+            log.Warn("Trying to connect to subject {0} ", this.Subject);
             if (websocket.State != WebSocketState.Connecting)
             {
                 websocket.Open();
@@ -44,7 +44,7 @@ namespace FlickerBox.Communication
                 websocket.Close();
                 websocket.Open();
             }
-            success = !resetEvent.WaitOne(TimeSpan.FromSeconds(2));
+            bool success = !resetEvent.WaitOne(TimeSpan.FromSeconds(2));
             return success;
         }
 
@@ -61,15 +61,20 @@ namespace FlickerBox.Communication
             numberMessageReceived++;
         }
 
+        private DateTime lastAttempt = DateTime.MinValue;
         private void websocket_Closed(object sender, EventArgs e)
         {
-            log.Warn("The socket has been closed, trying to reconnect ...");
+            log.Warn("The socket has been closed for subject {0}, current state {1}, trying to reconnect ...", this.Subject, websocket.State);
             while (websocket.State != WebSocketState.Open)
             {
                 try
                 {
-                    log.Warn("Trying to connect again ... ");
-                    TryToConnect();
+                    //No more that 1 try every 10 s for every subjects
+                    if ((DateTime.Now - lastAttempt).TotalSeconds > 10)
+                    {
+                        lastAttempt = DateTime.Now;
+                        TryToConnect();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -81,11 +86,12 @@ namespace FlickerBox.Communication
 
         private void websocket_Error(object sender, ErrorEventArgs e)
         {
-            log.Error("Error with websocket : ", e.Exception);
+            log.Error(String.Format("Error with websocket : {0}", e.Exception.Message));
         }
 
         private void websocket_Opened(object sender, EventArgs e)
         {
+            log.Info(String.Format("The socket has been opened for subject {0}.", this.Subject));
             websocket.Send(Subject);
             numberMessageReceived = 0;
             resetEvent.Set();
