@@ -12,6 +12,7 @@ namespace FlickerBox.Communication
         private Logger log = LogManager.GetCurrentClassLogger();
         private readonly WebSocket websocket;
         private readonly AutoResetEvent resetEvent;
+        private readonly object internalLock = new object();
         public FastFlickerClient(string url, string subject)
         {
             log.Debug("In constructor");
@@ -33,18 +34,28 @@ namespace FlickerBox.Communication
 
         private bool TryToConnect()
         {
-            log.Warn("Trying to connect to subject {0} ", this.Subject);
-            if (websocket.State != WebSocketState.Connecting)
+            bool success = false;
+            log.Warn("Trying to connect to subject {0}, currentState {1}", this.Subject, websocket.State);
+            try
             {
-                websocket.Open();
+
+                if (websocket.State != WebSocketState.Connecting)
+                {
+                    websocket.Open();
+                }
+                else
+                {
+                    log.Info("We are connecting, closing then opening again...");
+                    websocket.Close();
+                    websocket.Open();
+                }
+                success = !resetEvent.WaitOne(TimeSpan.FromSeconds(2));
+
             }
-            else
+            catch (Exception ex)
             {
-                log.Info("We are connecting, closing then opening again...");
-                websocket.Close();
-                websocket.Open();
+                log.Warn("unable to connect to webSocket server : " + ex);
             }
-            bool success = !resetEvent.WaitOne(TimeSpan.FromSeconds(2));
             return success;
         }
 
@@ -61,26 +72,56 @@ namespace FlickerBox.Communication
             numberMessageReceived++;
         }
 
-        private DateTime lastAttempt = DateTime.MinValue;
+        private bool reconnecting = false;
         private void websocket_Closed(object sender, EventArgs e)
         {
+            lock (internalLock)
+            {
+                if (reconnecting)
+                {
+                    log.Info("The socket has been closed for subject {0}, current state {1}, already reconnecting ...", this.Subject, websocket.State);
+                    return;
+                }
+                reconnecting = true;
+            }
             log.Warn("The socket has been closed for subject {0}, current state {1}, trying to reconnect ...", this.Subject, websocket.State);
+            int tryNumber = 0;
             while (websocket.State != WebSocketState.Open)
             {
-                try
+                
+                    tryNumber++;
+                TimeSpan waitPeriod = GetWaitPeriod(tryNumber);
+                if (!TryToConnect())
                 {
-                    //No more that 1 try every 10 s for every subjects
-                    if ((DateTime.Now - lastAttempt).TotalSeconds > 10)
-                    {
-                        lastAttempt = DateTime.Now;
-                        TryToConnect();
-                    }
+                    log.Warn(string.Format("Connection failed, trying again in  {0} s", waitPeriod.TotalSeconds));
+                    Thread.Sleep(waitPeriod);
                 }
-                catch (Exception ex)
-                {
-                    log.Warn("unable to connect to webSocket server : " + ex);
-                }
-                Thread.Sleep(30000);
+            }
+            reconnecting = false;
+        }
+
+        private static TimeSpan GetWaitPeriod(int tryNumber)
+        {
+            switch (tryNumber)
+            {
+                case 0:
+                case 1:
+                    return TimeSpan.FromSeconds(2);
+                case 2:
+                    return TimeSpan.FromSeconds(5);
+                case 3:
+                    return TimeSpan.FromSeconds(10);
+                case 4:
+                case 5:
+                    return TimeSpan.FromSeconds(30);
+                case 6:
+                    return TimeSpan.FromSeconds(60);
+                case 7:
+                case 8:
+                case 9:
+                    return TimeSpan.FromSeconds(60 * 5);
+                default:
+                    return TimeSpan.FromSeconds(60 * 20);
             }
         }
 
