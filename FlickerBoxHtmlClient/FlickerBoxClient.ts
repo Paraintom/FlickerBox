@@ -119,6 +119,11 @@ class FlickerBoxClient {
         this.fastFlickerClient.doSend(toSend);
     }
 
+    public isConnected() {
+        return this.fastFlickerClient != null
+            && this.fastFlickerClient.isConnected();
+    }
+
     public addFriend(name: string, passphrase: string) {
         var request = new FriendRequest(name, passphrase);
         var toSend = request.toJson();

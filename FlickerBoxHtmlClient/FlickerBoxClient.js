@@ -160,6 +160,10 @@ var FlickerBoxClient = (function () {
         this.fastFlickerClient.doSend(toSend);
     };
 
+    FlickerBoxClient.prototype.isConnected = function () {
+        return this.fastFlickerClient != null && this.fastFlickerClient.isConnected();
+    };
+
     FlickerBoxClient.prototype.addFriend = function (name, passphrase) {
         var request = new FriendRequest(name, passphrase);
         var toSend = request.toJson();

@@ -58,6 +58,11 @@ class FastFlickerClient {
         this.websocket.onerror = evt => { this.onErrorReceived(evt); };
     }
 
+    public isConnected() {
+        return this.websocket != null
+            && this.websocket.readyState == WebSocket.OPEN;
+    }
+
     public doSend(message: string) {
         if (this.websocket != null) {
             this.websocket.send(message);

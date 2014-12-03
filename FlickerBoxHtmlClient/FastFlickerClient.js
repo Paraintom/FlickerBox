@@ -89,6 +89,10 @@ var FastFlickerClient = (function () {
         };
     };
 
+    FastFlickerClient.prototype.isConnected = function () {
+        return this.websocket != null && this.websocket.readyState == WebSocket.OPEN;
+    };
+
     FastFlickerClient.prototype.doSend = function (message) {
         if (this.websocket != null) {
             this.websocket.send(message);
