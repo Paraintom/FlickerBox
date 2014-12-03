@@ -11,6 +11,9 @@ flickerBoxApp.controller('FriendsAndMessagesCtrl', function ($scope) {
     $scope.url;
     startUrlLookup();
     var ffClient = null;
+    var now = new Date();
+    var lastReconnectAttempt = new Date();
+    lastReconnectAttempt.setDate(now.getDate() - 1);;
 
     // Discover new friends 
     $scope.newFriendName;
@@ -91,11 +94,8 @@ flickerBoxApp.controller('FriendsAndMessagesCtrl', function ($scope) {
         if ($scope.privateId != null && $scope.privateId.length && $scope.url != null && $scope.url.length) {
             console.log("Starting the box with privateId=" + $scope.privateId + ", and url=" + $scope.url);
             ffClient = new FlickerBoxClient($scope.privateId);
-            ffClient.onConnected.subscribe(() => {
-                console.log("Connected");
-                onConnected();
-            });
-            ffClient.onDisconnected.subscribe(() => console.log("Disconnected"));
+            ffClient.onConnected.subscribe(() =>$scope.$apply(onConnected()));
+            ffClient.onDisconnected.subscribe(() => $scope.$apply(onDisconnected()));
             ffClient.onError.subscribe((a) => console.log("Error:" + a));
             ffClient.onMessage.subscribe((m) => $scope.$apply(onMessage(m)));
             ffClient.onStateChange.subscribe((a) => console.log("Ack:" + a.Id + ":" + AckState[a.State]));
@@ -116,20 +116,7 @@ flickerBoxApp.controller('FriendsAndMessagesCtrl', function ($scope) {
         return uuid;
     };
     //Events handlers
-    function onConnected() {
-        //We check when was the last time we ask for message and ask for the delta
-        var lastString = localStorage.getItem(localStorageLastMessageReceived);
-
-        var date = new Date(-31556952000);
-        if (lastString != null) {
-            date = new Date(parseInt(lastString));
-            console.log("asking all message since " + date);
-        } else {
-            console.log("No date found in local storage, asking for all messages...");
-
-        }
-        ffClient.getAllMessages(date);
-    }
+    
 
     function onFriend(friend: Friend) {
         var newFriendName = friend.Name;
@@ -147,9 +134,57 @@ flickerBoxApp.controller('FriendsAndMessagesCtrl', function ($scope) {
         console.log("Saving to local storage :" + stringify);
         localStorage.setItem(localStorageAllFriends, stringify);
     }
+    function onConnected() {
+        $scope.isConnected = true;
+        console.log("Connected");
+        //We check when was the last time we ask for message and ask for the delta
+        var lastString = localStorage.getItem(localStorageLastMessageReceived);
+
+        var date = new Date(-31556952000);
+        if (lastString != null) {
+            date = new Date(parseInt(lastString));
+            console.log("asking all message since " + date);
+        } else {
+            console.log("No date found in local storage, asking for all messages...");
+
+        }
+        ffClient.getAllMessages(date);
+    }
+
+    function onDisconnected() {
+        $scope.isConnected = false;
+        console.log("We lost the connection with the box!");
+        checkWellConnected();
+    }
+
+    $scope.isConnected = false;
+
+    function checkWellConnected() {
+        console.log("Checking that we are connected...");
+        if (ffClient.isConnected()) {
+            console.log("We are well connected!");
+            $scope.isConnected = true;
+        } else {
+            var disconnectTime = new Date();
+            var totalSecondsElapsedSinceLastCall = (disconnectTime.getTime() - lastReconnectAttempt.getTime()) / 1000;
+            if (totalSecondsElapsedSinceLastCall > 10) {
+                lastReconnectAttempt = disconnectTime;
+                console.log("It is new, let's try again in 5s");
+                setTimeout(() => reconnect(), 5000);
+                setTimeout(() => checkWellConnected(), 15000);
+            } else {
+                console.log("Hum, we tried few seconds ago. Let's wait a little before reconnection...");
+                setTimeout(() => checkWellConnected(), 15000);
+            }
+        }
+    }
+
+    function reconnect() {
+        console.log("reconnecting...");
+        ffClient.connect("ws://" + $scope.url + "/");
+    }
 
     function onMessage(message: Message) {
-
         var friendName;
         var fromFriendName = message.FromFriendName;
         var toFriendName = message.ToFriendName;

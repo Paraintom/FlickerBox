@@ -11,7 +11,14 @@ span {
 }
 #friendDiv {
     width:30%;
+    /*background:red;*/
+}
+
+.disconnected {
     background:red;
+}
+.connected {
+    background:green;
 }
 #messageDiv {
     float:right;
