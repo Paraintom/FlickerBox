@@ -136,6 +136,7 @@ flickerBoxApp.controller('FriendsAndMessagesCtrl', function ($scope) {
     }
     function onConnected() {
         $scope.isConnected = true;
+        $scope.tryReconnectNumber = 0;
         console.log("Connected");
         //We check when was the last time we ask for message and ask for the delta
         var lastString = localStorage.getItem(localStorageLastMessageReceived);
@@ -158,6 +159,7 @@ flickerBoxApp.controller('FriendsAndMessagesCtrl', function ($scope) {
     }
 
     $scope.isConnected = false;
+    $scope.tryReconnectNumber = 0;
 
     function checkWellConnected() {
         console.log("Checking that we are connected...");
@@ -167,15 +169,37 @@ flickerBoxApp.controller('FriendsAndMessagesCtrl', function ($scope) {
         } else {
             var disconnectTime = new Date();
             var totalSecondsElapsedSinceLastCall = (disconnectTime.getTime() - lastReconnectAttempt.getTime()) / 1000;
-            if (totalSecondsElapsedSinceLastCall > 10) {
+            if (totalSecondsElapsedSinceLastCall > 5) {
                 lastReconnectAttempt = disconnectTime;
-                console.log("It is new, let's try again in 5s");
-                setTimeout(() => reconnect(), 5000);
-                setTimeout(() => checkWellConnected(), 15000);
+                var secondBeforeTryingAgain = getNbSecondBeforeTryingReconnect();
+
+                if (secondBeforeTryingAgain != -1) {
+                    console.log("Let's try again in " + secondBeforeTryingAgain + "s");
+                    var reconnectIn = secondBeforeTryingAgain * 1000;
+                    $scope.tryReconnectNumber++;
+                    setTimeout(() => reconnect(), reconnectIn);
+                    setTimeout(() => checkWellConnected(), reconnectIn + 5000);
+                } else {
+                    console.log("Giving up reconnection, please manually reconnect!");
+                }
             } else {
-                console.log("Hum, we tried few seconds ago. Let's wait a little before reconnection...");
-                setTimeout(() => checkWellConnected(), 15000);
+                console.log("Hum, we tried few seconds ago. The reconnection should be already happening...");
+                //setTimeout(() => checkWellConnected(), 15000);
             }
+        }
+    }
+
+    function getNbSecondBeforeTryingReconnect() {
+        switch ($scope.tryReconnectNumber) {
+            case 0:
+                return 5;
+            case 1:
+                return 6;
+            case 2:
+            case 3:
+                return 15;
+            default:
+                return -1;
         }
     }
 
